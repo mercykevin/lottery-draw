@@ -1,0 +1,183 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.wrap {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.header {
+    height: 50%;
+    width: 100%;
+    text-align: center;
+    font-size: 0;
+    background: url('./img/beijing.jpg') #b90e06 no-repeat center center;
+    background-size: cover;
+}
+
+.content {
+    position: relative;
+    height: 50%;
+    width: 100%;
+    background-color: #d21e14;
+}
+
+.inner-content {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    margin-left: -500px;
+    padding: 80px 30px 20px 30px;
+    width: 1000px;
+    height: 100%;
+    background: url('./img/lihe.png') #820405 no-repeat left bottom;
+}
+
+.corner-img {
+    position: absolute;
+    width: 312px;
+    height: 61px;
+    top: -13px;
+    left: -16px;
+    padding-top: 7px;
+    padding-left: 25px;
+    background: url('./img/piaodai.png') no-repeat;
+    color: #a00a00;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.prize .title {
+    width: 40%;
+    height: 200px;
+    line-height: 200px;
+    float: left;
+    color: #ffd83d;
+    font-size: 100px;
+    font-weight: bolder;
+    text-align: center;
+}
+
+.prize .title img {
+    display: none;
+}
+
+.prize .message {
+    width: 60%;
+    height: 200px;
+    padding: 0 15px 15px 15px;
+    background-color: #ffd83d;
+    float: left;
+}
+
+.prize .message span {
+    display: inline-block;
+    font-size: 40px;
+}
+
+.prize .message span.label {
+    width: 17%;
+}
+
+.prize .message span.msg {
+    height: 75px;
+    width: 82%;
+    line-height: 80px;
+    text-align: center;
+    background-color: #fff;
+    margin-top: 15px;
+}
+
+.tip {
+    width: 50%;
+    position: absolute;
+    left: 405px;
+    top: 300px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.start-btn {
+    width: 324px;
+    height: 74px;
+    line-height: 74px;
+    position: absolute;
+    right: 30px;
+    top: 350px;
+    background: url('./img/anniu.png');
+    text-align: center;
+    color: #a00a00;
+    font-size: 40px;
+    font-weight: bolder;
+    cursor: pointer;
+    z-index: 999;
+}
+
+.start-btn.disable {
+    color: #ccc;
+}
+
+.setting {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 100px;
+    background-color: #fff;
+    color: #820405;
+    font-weight: bolder;
+    text-align: center;
+    cursor: pointer;
+    z-index: 999;
+
+}
+
+.setting-options {
+    display: none;
+    position: absolute;
+    right: 0;
+    bottom: 60px;
+    width: 200px;
+    background-color: #fff;
+}
+
+.setting-options ul {
+    list-style-type: none;
+}
+
+.setting-options ul li {
+    border-radius: 5px;
+    background-color: #a40000;
+    color: #fff;
+    margin: 20px;
+    font-weight: normal;
+}
+
+.triangle-down {
+    position: absolute;
+    right: 16px;
+    bottom: -10px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid #fff;
+}
+
+canvas {
+    cursor: crosshair;
+    display: block;
+    left: 0;
+    position: absolute;
+    top: 0;
+    z-index: 20
+}

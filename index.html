@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+    <title>抽奖程序</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+<div class="wrap">
+    <div class="header"></div>
+    <div class="content">
+        <div class="inner-content">
+            <div class="corner-img">抽奖操作区</div>
+            <div class="prize">
+                <div class="title">
+                    <img class="one" src="./img/yidengjiang.png" alt="">
+                    <img class="two" src="./img/erdengjiang.png" alt="">
+                    <img class="three" src="./img/sandengjiang.png" alt="">
+                    <img class="red-packet" src="./img/fahongbao.png" alt="">
+                </div>
+                <div class="message">
+                    <div class="company">
+                        <span class="label">公司</span>
+                        <span id="show-company" class="msg">XXXXXX</span>
+                    </div>
+                    <div class="name">
+                        <span class="label">姓名</span>
+                        <span id="show-name" class="msg">XXX</span>
+                    </div>
+                </div>
+                <div class="tip">*<span class="status-wrap"><span class="status">即将开始</span>第<span class="times">x</span>次抽奖，</span>剩余抽奖次数<span class="residue">x</span>次</div>
+            </div>
+            <div id="btn-ok" class="start-btn">开始抽奖</div>
+        </div>
+        <div class="setting">
+            <div class="setting-btn">设置</div>
+            <div class="setting-options">
+                <div class="triangle-down"></div>
+                <ul>
+                    <li class="one">开始一等奖</li>
+                    <li class="two">开始二等奖</li>
+                    <li class="three">开始三等奖</li>
+                    <li class="red-packet">老总发红包</li>
+                    <li class="reset">重置</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="Fireworks.js"></script>
+<script type="text/javascript" src="data.js"></script>
+<script>
+    $(function () {
+        /*
+         * 开始放礼花
+         * */
+        var fire = null;
+        var fworks = new Fireworks();
+
+        function startFire() {
+            $('canvas').show();
+            var speed = 300;
+            var min = 2;
+            var max = 5;
+            var winWidth = $(window).width();
+            var winHeight = $(window).height();
+            fire = setInterval(function () {
+                var startX = GetRandomNum(100, winWidth - 100);
+                var startY = winHeight;
+                var targetX = startX;//从下到上
+                var targetY = GetRandomNum(100, winHeight / 2);
+                fworks.randHue();
+                for (var i = 0; i < GetRandomNum(min, max); i++) {
+                    fworks.createFireworks(startX, startY, targetX, targetY);
+                }
+            }, speed);
+//            fireArc();
+        }
+
+        /*
+         * 结束放礼花
+         * */
+        function stopFire() {
+            if (fire) {
+                clearInterval(fire)
+            }
+            $('canvas').hide();
+        }
+
+        /*
+         * 弧形礼花
+         * */
+        function fireArc() {
+            var winWidth = $(window).width();
+            var winHeight = $(window).height();
+            var speed = 1;
+            var r = 600;
+            var space = 20;//横向间隔
+            var startArcX = 100;
+            var endArcX = 2 * r - 100;
+            var target = [];
+            for (var i = startArcX; i <= endArcX; i++) {
+                if (i % space == 0) {
+                    var y = Math.sqrt(r * r - (i - r) * (i - r))
+                    target.push([winWidth / 2 - r + i, winHeight / 2 + 260 - y]);
+                }
+            }
+            fworks.randHue();
+            function fireOneByOne(n) {
+                if (n > target.length - 1) return;
+                setTimeout(function () {
+                    var tar = target[n];
+                    fworks.createFireworks(winWidth / 2, winHeight, tar[0], tar[1]);
+                    fworks.createFireworks(winWidth / 2, winHeight, tar[0], tar[1]);
+                    fireOneByOne(++n)
+                }, speed);
+            }
+
+            fireOneByOne(0);
+        }
+
+        var SPEED = 10;
+        var count = participator.length;
+        var index = GetRandomNum(0, count);
+        var company = participator[index][0];
+        var name = participator[index][1];
+        var currentMod;
+        /*
+         * 初始化
+         * */
+        function init(key) {
+            var mod = {
+                'one': {
+                    times: 1,
+                    residue: 1
+                },
+                'two': {
+                    times: 1,
+                    residue: 2
+                },
+                'three': {
+                    times: 1,
+                    residue: 3
+                }
+            };
+            $('.prize .title img' + '.' + key).show().siblings().hide();
+            if (key === 'red-packet') {
+                $('.message .company .label').html('老总');
+                $('.message .company .msg').html('XXX');
+                $('.message .name .label').html('金额');
+                $('.message .name .msg').html('$$$');
+                $('.tip').hide();
+                $('#btn-ok')
+                        .removeClass('disable')
+                        .removeClass('stop-packet')
+                        .removeClass('stop')
+                        .removeClass('begin')
+                        .addClass('begin-packet')
+                        .html('开始');
+            } else {
+                $('.message .company .label').html('公司');
+                $('.message .company .msg').html('XXXXXX');
+                $('.message .name .label').html('姓名');
+                $('.message .name .msg').html('XXX');
+                currentMod = mod[key];
+                setTimes();
+                $('.tip').show();
+                $('.status-wrap').show();
+                $('#btn-ok')
+                        .removeClass('stop')
+                        .removeClass('stop-packet')
+                        .removeClass('disable')
+                        .removeClass('begin-packet')
+                        .addClass('begin')
+                        .html('开始抽奖');
+            }
+
+        }
+
+        init('three');
+        /*
+         * 设置提示信息
+         * */
+        function setTimes() {
+            $('.times').html(currentMod.times);
+            $('.residue').html(currentMod.residue);
+        }
+
+        $('.setting').click(function () {
+            $('.setting-options').toggle();
+            return false;
+        });
+        $('.setting-options li').click(function () {
+            var mod = $(this).attr('class');
+            if (mod === 'one' || mod === 'two' || mod === 'three' || mod === 'red-packet') {
+                init(mod);
+            }
+            if (mod === 'reset') {
+                location.reload();
+            }
+        });
+        $(document).click(function () {
+            $('.setting-options').hide();
+        });
+        var t = null;
+        /*
+         * 开始老总发红包事件
+         * */
+        $(document).on('click', '#btn-ok.begin-packet', function () {
+            // 开始随机
+            var $this = $(this);
+            stopFire();
+            t = setInterval(function () {
+                index = GetRandomNum(0, chiefs.length - 1);
+                company = chiefs[index];
+                name = sums[GetRandomNum(0, sums.length - 1)];
+                $('#show-company').html(company);
+                $('#show-name').html(name);
+            }, SPEED);
+            $this.removeClass('begin-packet').addClass('stop-packet').html('停');
+        });
+        /*
+         * 停止老总发红包事件
+         * */
+        $(document).on('click', '#btn-ok.stop-packet', function () {
+            var $this = $(this);
+            startFire();
+            clearInterval(t);
+            chiefs.splice(index, 1);
+            if (chiefs.length) {
+                $this.removeClass('stop-packet')
+                        .addClass('begin-packet')
+                        .html('开始');
+            } else {
+                $this.removeClass('stop-packet')
+                        .removeClass('begin-packet')
+                        .addClass('disable')
+                        .html('结束');
+            }
+
+        });
+        /*
+         * 开始抽奖事件
+         * */
+        $(document).on('click', '#btn-ok.begin', function () {
+            // 开始随机
+            var $this = $(this);
+            if ($this.hasClass('disable')) return false;
+            count = participator.length;
+            console.log('当前参与抽奖人数:', count);
+            stopFire();
+            t = setInterval(function () {
+                index = GetRandomNum(0, count - 1);
+                company = participator[index][0];
+                name = participator[index][1];
+                $('#show-name').html(name);
+                $('#show-company').html(company);
+            }, SPEED);
+            $this.removeClass('begin').addClass('stop').html('停');
+            $('.status').html('正在进行');
+        });
+        /*
+         * 停止抽奖事件
+         * */
+        $(document).on('click', '#btn-ok.stop', function () {
+            var $this = $(this);
+            if ($this.hasClass('disable')) return false;
+            //抽奖成功,显示中奖人
+            currentMod.times++;
+            currentMod.residue--;
+            setTimes();
+            if (currentMod.residue === 0) {
+                $this.removeClass('stop')
+                        .removeClass('begin')
+                        .addClass('disable')
+                        .html('抽奖结束');
+                $('.status-wrap').hide();
+                $('.status').html('将要开始');
+            } else {
+                $this.removeClass('stop')
+                        .addClass('begin')
+                        .html('开始抽奖');
+                $('.status').html('将要开始');
+            }
+            startFire();
+            clearInterval(t);
+            participator.splice(index, 1);
+        });
+        $(document).on('keydown', function (e) {
+            if (e.keyCode == 32 || e.keyCode == 13) {
+                $('#btn-ok').click();
+            }
+        })
+    });
+    function GetRandomNum(Min, Max) {
+        var Range = Max - Min;
+        var Rand = Math.random();
+        return (Min + Math.round(Rand * Range));
+    }
+</script>
+</body>
+</html>
