@@ -8,7 +8,9 @@
 </head>
 <body>
 <div class="wrap">
-    <div class="header"></div>
+    <div class="header">
+        <div class="header-cover"></div>
+    </div>
     <div class="content">
         <div class="inner-content">
             <div class="corner-img">抽奖操作区</div>
@@ -19,19 +21,21 @@
                     <img class="three" src="./img/sandengjiang.png" alt="">
                     <img class="red-packet" src="./img/fahongbao.png" alt="">
                 </div>
-                <div class="message">
-                    <div class="company">
-                        <span class="label">公司</span>
-                        <span id="show-company" class="msg">XXXXXX</span>
+                <div class="message-wrap">
+                    <div class="message">
+                        <div class="company">
+                            <span class="label">公司</span>
+                            <span id="show-company" class="msg">XXXXXX</span>
+                        </div>
+                        <div class="name">
+                            <span class="label">姓名</span>
+                            <span id="show-name" class="msg">XXX</span>
+                        </div>
                     </div>
-                    <div class="name">
-                        <span class="label">姓名</span>
-                        <span id="show-name" class="msg">XXX</span>
-                    </div>
+                    <div class="tip">*<span class="status-wrap"><span class="status">即将开始</span>第<span class="times">x</span>次抽奖，</span>剩余抽奖次数<span class="residue">x</span>次</div>
+                    <div id="btn-ok" class="start-btn">开始抽奖</div>
                 </div>
-                <div class="tip">*<span class="status-wrap"><span class="status">即将开始</span>第<span class="times">x</span>次抽奖，</span>剩余抽奖次数<span class="residue">x</span>次</div>
             </div>
-            <div id="btn-ok" class="start-btn">开始抽奖</div>
         </div>
         <div class="setting">
             <div class="setting-btn">设置</div>
@@ -63,7 +67,7 @@
 
         function startFire() {
             $('canvas').show();
-            var speed = 300;
+            var speed = 333;
             var min = 2;
             var max = 5;
             var winWidth = $(window).width();
@@ -78,9 +82,10 @@
                     fworks.createFireworks(startX, startY, targetX, targetY);
                 }
             }, speed);
-//            fireArc();
+            fireArc();
         }
 
+        fireArc();
         /*
          * 结束放礼花
          * */
@@ -97,34 +102,44 @@
         function fireArc() {
             var winWidth = $(window).width();
             var winHeight = $(window).height();
-            var speed = 1;
+            var speed = 10;
+            var space = 50;//横向间隔
             var r = 600;
-            var space = 20;//横向间隔
-            var startArcX = 100;
-            var endArcX = 2 * r - 100;
+            var startArcX = 350;
+            var endArcX = 2 * r - startArcX;
             var target = [];
             for (var i = startArcX; i <= endArcX; i++) {
                 if (i % space == 0) {
                     var y = Math.sqrt(r * r - (i - r) * (i - r))
-                    target.push([winWidth / 2 - r + i, winHeight / 2 + 260 - y]);
+                    target.push([winWidth / 2 - r + i, winHeight / 2 + 300 - y]);
                 }
             }
-            fworks.randHue();
-            function fireOneByOne(n) {
-                if (n > target.length - 1) return;
+            function fireTogether() {
+                for (var i = 0; i < target.length; i++) {
+                    var tar = target[i];
+                    fworks.randHue();
+                    fworks.createFireworks(winWidth / 2, 30, tar[0], tar[1]);
+                    fworks.createFireworks(winWidth / 2, 30, tar[0], tar[1]);
+                }
+            }
+
+            function fireOneByOne(i) {
+                if (i > target.length - 1) return;
                 setTimeout(function () {
-                    var tar = target[n];
+                    var tar = target[i];
+                    fworks.randHue();
                     fworks.createFireworks(winWidth / 2, winHeight, tar[0], tar[1]);
                     fworks.createFireworks(winWidth / 2, winHeight, tar[0], tar[1]);
-                    fireOneByOne(++n)
+                    fireOneByOne(++i)
                 }, speed);
             }
 
-            fireOneByOne(0);
+            fireTogether();
+//            fireOneByOne(0);
         }
 
         var SPEED = 10;
-        var count = participator.length;
+        var count = participator.length-1;
         var index = GetRandomNum(0, count);
         var company = participator[index][0];
         var name = participator[index][1];

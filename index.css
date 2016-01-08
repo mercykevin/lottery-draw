@@ -20,6 +20,16 @@
     background: url('./img/beijing.jpg') #b90e06 no-repeat center center;
     background-size: cover;
 }
+.header-cover1{
+    width:100%;
+    height: 100%;
+    background:-webkit-gradient(linear,50% 100%,50% 0
+    ,color-stop(0,rgba(0,0,0,.5))
+    ,color-stop(.1,rgba(0,0,0,.40))
+    ,color-stop(.25,rgba(0,0,0,.20))
+    ,color-stop(.35,rgba(0,0,0,.05))
+    ,color-stop(.5,rgba(0,0,0,0)))
+}
 
 .content {
     position: relative;
@@ -33,7 +43,7 @@
     top: 0;
     left: 50%;
     margin-left: -500px;
-    padding: 80px 30px 20px 30px;
+    padding: 70px 30px 20px 30px;
     width: 1000px;
     height: 100%;
     background: url('./img/lihe.png') #820405 no-repeat left bottom;
@@ -54,31 +64,40 @@
 }
 
 .prize .title {
-    width: 40%;
-    height: 200px;
-    line-height: 200px;
+    width: 45%;
+    height: 100px;
+    line-height: 100px;
+    padding-right:30px;
     float: left;
     color: #ffd83d;
     font-size: 100px;
     font-weight: bolder;
-    text-align: center;
+    text-align: right;
 }
 
 .prize .title img {
+    height: 90px;
+    width: auto;
     display: none;
 }
 
+.prize .message-wrap {
+    width: 55%;
+    float: left;
+}
+
 .prize .message {
-    width: 60%;
-    height: 200px;
+    border-radius:5px;
+    width: 100%;
+    height: 160px;
+    margin-top: -35px;
     padding: 0 15px 15px 15px;
     background-color: #ffd83d;
-    float: left;
 }
 
 .prize .message span {
     display: inline-block;
-    font-size: 40px;
+    font-size: 35px;
 }
 
 .prize .message span.label {
@@ -86,31 +105,28 @@
 }
 
 .prize .message span.msg {
-    height: 75px;
-    width: 82%;
-    line-height: 80px;
+    height: 60px;
+    width: 80%;
+    line-height: 60px;
     text-align: center;
     background-color: #fff;
-    margin-top: 15px;
+    margin-top: 13px;
 }
 
 .tip {
-    width: 50%;
-    position: absolute;
-    left: 405px;
-    top: 300px;
+    margin-top:10px;
     color: #fff;
     font-size: 20px;
     font-weight: bold;
 }
 
 .start-btn {
+    position:relative;
+    float: right;
+    margin-top:20px;
     width: 324px;
     height: 74px;
     line-height: 74px;
-    position: absolute;
-    right: 30px;
-    top: 350px;
     background: url('./img/anniu.png');
     text-align: center;
     color: #a00a00;
