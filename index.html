@@ -255,7 +255,9 @@
                         .addClass('disable')
                         .html('结束');
             }
-            startFire();
+            setTimeout(function(){
+                startFire();
+            },10)
         });
         /*
          * 开始抽奖事件
@@ -302,7 +304,9 @@
             }
             clearInterval(t);
             participator.splice(index, 1);
-            startFire();
+            setTimeout(function(){
+                startFire();
+            },10)
         });
         $(document).on('keydown', function (e) {
             if (e.keyCode == 32 || e.keyCode == 13) {
