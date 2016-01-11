@@ -144,24 +144,32 @@
         var company = participator[index][0];
         var name = participator[index][1];
         var currentMod;
+        var mod = {
+            'one': {
+                times: 1,
+                residue: 1
+            },
+            'two': {
+                times: 1,
+                residue: 2
+            },
+            'three': {
+                times: 1,
+                residue: 3
+            }
+        };
         /*
          * 初始化
          * */
         function init(key) {
-            var mod = {
-                'one': {
-                    times: 1,
-                    residue: 1
-                },
-                'two': {
-                    times: 1,
-                    residue: 2
-                },
-                'three': {
-                    times: 1,
-                    residue: 3
-                }
-            };
+            var lotteryStatus = localStorage.getItem('lottery-status');
+            if (lotteryStatus) {
+                var lotteryStatusJson = $.parseJSON(lotteryStatus)
+                mod = lotteryStatusJson.mod;
+                participator = lotteryStatusJson.participator;
+            }
+
+            console.log('参与总人数:', participator.length);
             $('.prize .title img' + '.' + key).show().siblings().hide();
             if (key === 'red-packet') {
                 $('.message .company .label').html('老总');
@@ -182,16 +190,7 @@
                 $('.message .name .label').html('姓名');
                 $('.message .name .msg').html('XXX');
                 currentMod = mod[key];
-                setTimes();
-                $('.tip').show();
-                $('.status-wrap').show();
-                $('#btn-ok')
-                        .removeClass('stop')
-                        .removeClass('stop-packet')
-                        .removeClass('disable')
-                        .removeClass('begin-packet')
-                        .addClass('begin')
-                        .html('开始抽奖');
+                setStatus();
             }
 
         }
@@ -200,9 +199,29 @@
         /*
          * 设置提示信息
          * */
-        function setTimes() {
+        function setStatus() {
             $('.times').html(currentMod.times);
             $('.residue').html(currentMod.residue);
+            if (currentMod.residue === 0) {
+                $('#btn-ok').removeClass('stop')
+                        .removeClass('begin')
+                        .addClass('disable')
+                        .html('抽奖结束');
+                $('.status-wrap').hide();
+                $('.status').html('将要开始');
+            } else {
+                $('#btn-ok').removeClass('stop')
+                        .removeClass('disable')
+                        .addClass('begin')
+                        .html('开始抽奖');
+                $('.status-wrap').show();
+                $('.status').html('将要开始');
+            }
+            var lotteryStatusJson = {
+                mod: mod,
+                participator: participator
+            };
+            localStorage.setItem('lottery-status', JSON.stringify(lotteryStatusJson));
         }
 
         $('.setting').click(function () {
@@ -215,6 +234,7 @@
                 init(mod);
             }
             if (mod === 'reset') {
+                localStorage.setItem('lottery-status', '');
                 location.reload();
             }
         });
@@ -255,9 +275,9 @@
                         .addClass('disable')
                         .html('结束');
             }
-            setTimeout(function(){
+            setTimeout(function () {
                 startFire();
-            },10)
+            }, 20)
         });
         /*
          * 开始抽奖事件
@@ -285,28 +305,18 @@
         $(document).on('click', '#btn-ok.stop', function () {
             var $this = $(this);
             if ($this.hasClass('disable')) return false;
-            //抽奖成功,显示中奖人
+            participator.splice(index, 1);
             currentMod.times++;
             currentMod.residue--;
-            setTimes();
-            if (currentMod.residue === 0) {
-                $this.removeClass('stop')
-                        .removeClass('begin')
-                        .addClass('disable')
-                        .html('抽奖结束');
-                $('.status-wrap').hide();
-                $('.status').html('将要开始');
-            } else {
-                $this.removeClass('stop')
-                        .addClass('begin')
-                        .html('开始抽奖');
-                $('.status').html('将要开始');
-            }
+            setStatus();
             clearInterval(t);
-            participator.splice(index, 1);
-            setTimeout(function(){
+            setTimeout(function () {
                 startFire();
-            },10)
+            }, 20);
+            //抽奖结束一段时间之后,停止播放烟花动画.否则浏览器切出去长时间切回来之后,会卡.
+            setTimeout(function () {
+                stopFire()
+            }, 1000 * 60);
         });
         $(document).on('keydown', function (e) {
             if (e.keyCode == 32 || e.keyCode == 13) {
