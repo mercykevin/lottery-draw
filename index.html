@@ -46,14 +46,14 @@
                     <li class="two">开始二等奖</li>
                     <li class="three">开始三等奖</li>
                     <li class="red-packet">老总发红包</li>
-                    <li class="reset">重置</li>
+                    <li class="reset-lottery">重置抽奖</li>
+                    <li class="reset-packet">重置发红包</li>
                 </ul>
             </div>
         </div>
     </div>
 
 </div>
-
 <script src="jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="Fireworks.js"></script>
 <script type="text/javascript" src="data.js"></script>
@@ -164,26 +164,41 @@
         function init(key) {
             var lotteryStatus = localStorage.getItem('lottery-status');
             if (lotteryStatus) {
-                var lotteryStatusJson = $.parseJSON(lotteryStatus)
+                var lotteryStatusJson = $.parseJSON(lotteryStatus);
                 mod = lotteryStatusJson.mod;
                 participator = lotteryStatusJson.participator;
             }
 
+            var chiefsStr = localStorage.getItem('chiefs');
+            if (chiefsStr) {
+                chiefs = $.parseJSON(chiefsStr);
+            }
+
             console.log('参与总人数:', participator.length);
             $('.prize .title img' + '.' + key).show().siblings().hide();
+            $('#btn-ok')
+                    .removeClass('disable')
+                    .removeClass('stop-packet')
+                    .removeClass('begin-packet')
+                    .removeClass('stop')
+                    .removeClass('begin');
             if (key === 'red-packet') {
                 $('.message .company .label').html('老总');
                 $('.message .company .msg').html('XXX');
                 $('.message .name .label').html('金额');
                 $('.message .name .msg').html('$$$');
                 $('.tip').hide();
-                $('#btn-ok')
-                        .removeClass('disable')
-                        .removeClass('stop-packet')
-                        .removeClass('stop')
-                        .removeClass('begin')
+                console.log(chiefs);
+                if(chiefs&&chiefs.length>0){
+                    $('#btn-ok')
                         .addClass('begin-packet')
                         .html('开始');
+                }else{
+                    $('#btn-ok')
+                        .addClass('disable')
+                        .html('结束');
+                }
+
             } else {
                 $('.message .company .label').html('公司');
                 $('.message .company .msg').html('XXXXXX');
@@ -197,9 +212,10 @@
 
         init('three');
         /*
-         * 设置提示信息
+         * 设置提示信息 按鈕状态
          * */
         function setStatus() {
+            $('.tip').show();
             $('.times').html(currentMod.times);
             $('.residue').html(currentMod.residue);
             if (currentMod.residue === 0) {
@@ -233,8 +249,12 @@
             if (mod === 'one' || mod === 'two' || mod === 'three' || mod === 'red-packet') {
                 init(mod);
             }
-            if (mod === 'reset') {
+            if (mod === 'reset-lottery') {
                 localStorage.setItem('lottery-status', '');
+                location.reload();
+            }
+            if(mod==='reset-packet'){
+                localStorage.setItem('chiefs', '');
                 location.reload();
             }
         });
@@ -265,6 +285,7 @@
             var $this = $(this);
             clearInterval(t);
             chiefs.splice(index, 1);
+            localStorage.setItem('chiefs', JSON.stringify(chiefs));
             if (chiefs.length) {
                 $this.removeClass('stop-packet')
                         .addClass('begin-packet')
